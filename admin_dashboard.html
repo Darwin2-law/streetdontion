@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <div class="admin-container">
+    <!-- Admin Login Form -->
+    <div class="login-form" id="loginSection">
+      <h2>Admin Login</h2>
+      <form id="adminLoginForm">
+        <label for="adminPassword">Password:</label>
+        <input type="password" id="adminPassword" placeholder="Enter Password" required>
+        <button type="button" onclick="loginAdmin()">Login</button>
+      </form>
+    </div>
+
+    <!-- Admin Controls -->
+    <div class="admin-controls" id="adminControls" style="display: none;">
+      <h2>Admin Controls</h2>
+      <button onclick="clearChats()">Clear Chats</button>
+      <button onclick="clearStories()">Clear Stories</button>
+      <button onclick="otherAdminFunction()">Other Function</button>
+
+      <!-- Upload Story with Multiple Pictures and Videos -->
+      <div class="upload-section">
+        <h3>Upload Story with Pictures and Videos</h3>
+        <form id="uploadMediaForm" enctype="multipart/form-data">
+          <label for="storyTitle">Story Title:</label>
+          <input type="text" id="storyTitle" name="storyTitle" placeholder="Enter story title" required>
+
+          <label for="storyContent">Story Content:</label>
+          <textarea id="storyContent" name="storyContent" placeholder="Enter story content" required></textarea>
+
+          <label for="mediaFiles">Upload Images/Videos:</label>
+          <input type="file" id="mediaFiles" name="mediaFiles" accept="image/*,video/*" multiple required>
+
+          <button type="button" onclick="uploadMedia()">Upload Story with Media</button>
+        </form>
+        <p id="fileCountMessage" style="color: red;"></p>
+      </div>
+
+      <!-- Display Uploaded Media -->
+      <div id="uploadedMediaSection">
+        <h3>Uploaded Media</h3>
+        <div id="mediaGallery"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function loginAdmin() {
+      const password = document.getElementById('adminPassword').value;
+      if (password === '???:::#') {  // Replace with secure password check
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('adminControls').style.display = 'block';
+        fetchUploadedMedia();  // Fetch media after login
+      } else {
+        alert('Invalid password!');
+      }
+    }
+
+    function clearChats() {
+      alert('Chats cleared!');
+    }
+
+    function clearStories() {
+      alert('Stories cleared!');
+    }
+
+    function otherAdminFunction() {
+      alert('Other admin function executed');
+    }
+
+    // Function to handle multiple file upload with count validation
+    function uploadMedia() {
+      const mediaFiles = document.getElementById('mediaFiles').files;
+      const maxFiles = 20;  // You can adjust the maximum allowed files here
+      const fileCountMessage = document.getElementById('fileCountMessage');
+
+      // Check if selected files exceed the allowed limit
+      if (mediaFiles.length > maxFiles) {
+        fileCountMessage.textContent = `You have selected ${mediaFiles.length} files. The maximum is ${maxFiles}.`;
+        return;
+      } else {
+        fileCountMessage.textContent = '';
+      }
+
+      const form = document.getElementById('uploadMediaForm');
+      const formData = new FormData(form);
+
+      fetch('/uploadStoryWithMedia', {  // Replace with actual backend endpoint
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Story and media uploaded successfully!');
+          form.reset();  // Clear form fields after successful upload
+          fetchUploadedMedia();  // Refresh the media gallery after upload
+        } else {
+          alert('Failed to upload media.');
+        }
+      })
+      .catch(error => console.error('Error uploading media:', error));
+    }
+
+    function fetchUploadedMedia() {
+      fetch('/getUploadedMedia')  // Replace with actual backend endpoint
+        .then(response => response.json())
+        .then(media => {
+          const mediaGallery = document.getElementById('mediaGallery');
+          mediaGallery.innerHTML = '';  // Clear gallery
+          
+          media.forEach(item => {
+            const mediaDiv = document.createElement('div');
+            mediaDiv.className = 'media-item';
+
+            if (item.type.startsWith('image/')) {
+              mediaDiv.innerHTML = `<img src="${item.url}" alt="${item.title}" class="media-preview">`;
+            } else if (item.type.startsWith('video/')) {
+              mediaDiv.innerHTML = `<video controls class="media-preview"><source src="${item.url}" type="${item.type}"></video>`;
+            }
+
+            mediaGallery.appendChild(mediaDiv);
+          });
+        })
+        .catch(error => console.error('Error fetching uploaded media:', error));
+    }
+  </script>
+
+  <style>
+    .media-preview {
+      max-width: 100%;
+      max-height: 200px;
+      margin: 10px 0;
+    }
+    .media-item {
+      margin: 10px;
+    }
+  </style>
+
+</body>
+</html>

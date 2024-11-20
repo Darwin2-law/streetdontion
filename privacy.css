@@ -1,0 +1,38 @@
+
+.privacy-section {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.privacy-section h1, .privacy-section h2 {
+    color: #333;
+}
+
+.privacy-section p, .privacy-section ul {
+    color: #555;
+}
+
+/* Icon Bar */
+.icon-bar {
+    background-color:yellow;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 0;
+    z-index: 1000;
+}
+
+.icon-bar a {
+    color: green;
+    font-size: 1.5em;
+    text-align: center;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}

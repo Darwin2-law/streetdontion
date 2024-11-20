@@ -1,0 +1,91 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Community Chat Wall</title>
+        <link rel="stylesheet" href="community.css".css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    </head>
+    <body>
+    
+    <!-- Icon Navigation Bar -->
+<nav class="icon-bar">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="donate.html"><i class="fas fa-hand-holding-heart"></i> Donate</a>
+    <a href="stories.html"><i class="fas fa-book-open"></i> Stories</a>
+    <a href="community.html"><i class="fas fa-comments"></i> Community</a>
+    <a href="volunteer.html"><i class="fas fa-hands-helping"></i> Volunteer</a>
+    <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="https://chat.whatsapp.com/HguQWz2vYyhDdjcC6NEToy" target="_blank" class="whatsapp-link">
+        <i class="fab fa-whatsapp"></i>WhatsApp</a>
+    
+    <a href="admin_dashboard.html"><i class="fas fa-user-shield"></i> Admin</a>
+</nav>
+    <!-- Community Chat Wall Section -->
+    <section class="community-section">
+        <h1>Community Chat Wall</h1>
+        <p>Connect with others in the community by sharing your thoughts and messages here!</p>
+    
+        <!-- Chat Messages Display -->
+        <div id="chatWall" class="chat-wall"></div>
+    
+        <!-- Message Form -->
+        <form id="messageForm" onsubmit="return postMessage()">
+            <input type="text" id="username" placeholder="Your Name" required>
+            <textarea id="messageContent" placeholder="Write a message..." rows="3" required></textarea>
+            <button type="submit">Post Message</button>
+        </form>
+    
+    
+    <!-- JavaScript for Chat Wall Functionality -->
+    <script>
+        // Function to display messages from localStorage
+        function displayMessages() {
+            const chatWall = document.getElementById("chatWall");
+            chatWall.innerHTML = "";
+    
+            const messages = JSON.parse(localStorage.getItem("messages")) || [];
+            messages.forEach(message => {
+                const messageDiv = document.createElement("div");
+                messageDiv.classList.add("message");
+                messageDiv.innerHTML = `<strong>${message.username}:</strong> ${message.content}`;
+                chatWall.appendChild(messageDiv);
+            });
+        }
+    
+        // Function to post a new message
+        function postMessage() {
+            const username = document.getElementById("username").value.trim();
+            const messageContent = document.getElementById("messageContent").value.trim();
+    
+            if (username && messageContent) {
+                const messages = JSON.parse(localStorage.getItem("messages")) || [];
+                messages.push({ username, content: messageContent });
+                localStorage.setItem("messages", JSON.stringify(messages));
+    
+                // Clear input fields and display the new message
+                document.getElementById("messageForm").reset();
+                displayMessages();
+            } else {
+                alert("Please enter both a username and a message.");
+            }
+            return false; // Prevent form submission
+        }
+    
+        // Function for admin to clear all messages
+        function clearMessages() {
+            if (confirm("Are you sure you want to clear all messages?")) {
+                localStorage.removeItem("messages");
+                displayMessages();
+            }
+        }
+    
+        // Display messages on page load
+        displayMessages();
+    </script>
+    
+    </body>
+    </html>
+    

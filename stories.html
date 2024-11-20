@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impact Stories</title>
+    <link rel="stylesheet" href="stories.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<!-- Icon Navigation Bar -->
+<nav class="icon-bar">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="donate.html"><i class="fas fa-hand-holding-heart"></i> Donate</a>
+    <a href="stories.html"><i class="fas fa-book-open"></i> Stories</a>
+    <a href="community.html"><i class="fas fa-comments"></i> Community</a>
+    <a href="volunteer.html"><i class="fas fa-hands-helping"></i> Volunteer</a>
+    <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="https://chat.whatsapp.com/HguQWz2vYyhDdjcC6NEToy" target="_blank" class="whatsapp-link">
+        <i class="fab fa-whatsapp"></i>WhatsApp</a>
+    <a href="admin_dashboard.html"><i class="fas fa-user-shield"></i> Admin</a>
+</nav>
+
+
+<!-- Stories Section -->
+<section class="stories-section">
+    <h1>Impact Stories</h1>
+    <div id="storiesContainer" class="stories-container"></div>
+</section>
+<h1>Our Impact in Pictures</h1>
+
+
+    <h2>"Your Support Transforms Lives"</h2>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+        a {
+            display: inline-block;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            background: #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+        iframe {
+            margin: 20px auto;
+            display: block;
+            width: 80%;
+            height: 600px;
+            border: 2px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>"Giving is not just about making a donation. It’s about making a difference." </h1>
+    <a href="pdfs/Story.pdf" target="_blank">Download our story PDF</a>
+    <iframe src="pdfs/Story.pdf"></iframe>
+
+
+
+
+        <!-- Add more images as needed -->
+<!-- JavaScript to Load Stories from LocalStorage -->
+<script>
+    const express = require('express');
+const multer = require('multer');
+const path = require('path');
+
+const app = express();
+const PORT = 3000;
+
+// Static Folder to Serve PDFs
+app.use('/pdfs', express.static(path.join(__dirname, 'pdfs')));
+
+// Multer Configuration for Uploads
+const storage = multer.diskStorage({
+    destination: './pdfs',
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+const upload = multer({ storage });
+
+// Serve Upload Form
+app.get('/', (req, res) => {
+    res.send(`
+        <h1>Upload PDF</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="pdf" accept=".pdf" required>
+            <button type="submit">Upload PDF</button>
+        </form>
+        <h2>Available PDFs</h2>
+        <a href="/pdfs/sample.pdf" target="_blank">View Sample PDF</a>
+    `);
+});
+
+// Handle PDF Upload
+app.post('/upload', upload.single('pdf'), (req, res) => {
+    res.send(`PDF uploaded successfully! <a href="/pdfs/${req.file.filename}" target="_blank">View PDF</a>`);
+});
+
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+    // Function to load and display stories from localStorage
+    function loadStories() {
+        const storiesContainer = document.getElementById("storiesContainer");
+        storiesContainer.innerHTML = ""; // Clear previous content
+
+        const stories = JSON.parse(localStorage.getItem("stories")) || [];
+        
+        if (stories.length === 0) {
+            storiesContainer.innerHTML = "<p>No stories have been uploaded yet.</p>";
+        } else {
+            stories.forEach(story => {
+                const storyElement = document.createElement("div");
+                storyElement.classList.add("story");
+
+                // Check if media is an image or video based on its MIME type
+                let mediaElement;
+                if (story.mediaType.startsWith("image")) {
+                    mediaElement = `<img src="${story.media}" alt="${story.title}" class="story-media">`;
+                } else if (story.mediaType.startsWith("video")) {
+                    mediaElement = `<video controls class="story-media"><source src="${story.media}" type="${story.mediaType}">Your browser does not support the video tag.</video>`;
+                } else {
+                    mediaElement = `<p>Unsupported media type</p>`;
+                }
+
+                storyElement.innerHTML = `
+                    <h2>${story.title}</h2>
+                    <p>${story.description}</p>
+                    ${mediaElement}
+                `;
+                storiesContainer.appendChild(storyElement);
+            });
+        }
+    }
+
+    // Load stories when the page loads
+    window.onload = loadStories;
+</script>
+
+</body>
+</html>

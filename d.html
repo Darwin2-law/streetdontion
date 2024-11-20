@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<!-- Icon Navigation Bar -->
+<nav class="icon-bar">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="donate.html"><i class="fas fa-hand-holding-heart"></i> Donate</a>
+    <a href="stories.html"><i class="fas fa-book-open"></i> Stories</a>
+    <a href="community.html"><i class="fas fa-comments"></i> Community</a>
+    <a href="volunteer.html"><i class="fas fa-hands-helping"></i> Volunteer</a>
+    <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="https://chat.whatsapp.com/HguQWz2vYyhDdjcC6NEToy" target="_blank" class="whatsapp-link">
+        <i class="fab fa-whatsapp"></i>WhatsApp</a>
+    <a href="admin_dashboard.html"><i class="fas fa-user-shield"></i> Admin</a>
+</nav>
+
+<!-- Admin Login Verification -->
+<script>
+    const adminPassword = "d,,,@#"; // Replace with a secure password
+    const enteredPassword = prompt("Enter Admin Password:");
+    if (enteredPassword !== adminPassword) {
+        alert("Access Denied");
+        window.location.href = "index.html";
+    }
+</script>
+
+
+<!-- Admin Dashboard Section -->
+<section class="admin-section">
+    <h1>Admin Dashboard</h1>
+
+    <!-- Back to Home Button -->
+    <button onclick="window.location.href='index.html'" class="back-button">Back to Home</button>
+
+    <!-- Clear Community Chat -->
+    <div class="admin-panel">
+        <h2>Clear Community Chat</h2>
+        <button onclick="clearChat()">Clear Chat Messages</button>
+    </div>
+
+    <!-- Upload Stories (Images and Videos) -->
+    <div class="admin-panel">
+        <h2>Upload Stories</h2>
+        <form id="uploadStoryForm" onsubmit="return uploadStory()">
+            <input type="text" id="storyTitle" placeholder="Story Title" required>
+            <textarea id="storyDescription" placeholder="Story Description" rows="3" required></textarea>
+            <input type="file" id="storyMedia" accept="image/*,video/*" required>
+            <button type="submit">Upload Story</button>
+        </form>
+            <!-- Button to Clear Stories -->
+    <button id="clearStoriesBtn" class="admin-btn">Clear All Stories</button>
+    </div>
+
+    <!-- View and Clear Messages from Contact Page -->
+    <div class="admin-panel">
+        <h2>Contact Messages</h2>
+        <div id="messagesContainer"></div>
+        <button onclick="clearContactMessages()" class="clear-button">Clear All Contact Messages</button>
+    </div>
+
+    <section id="volunteerApplications">
+        <h2>Volunteer Applications</h2>
+        <button onclick="clearApplications()">Clear All Applications</button>
+        <div id="applicationsContainer"></div>
+    </section>
+</section>
+
+<!-- JavaScript for Admin Dashboard Functionality -->
+<script>
+    // Function to clear chat messages
+    function clearChat() {
+        if (confirm("Are you sure you want to clear all chat messages?")) {
+            localStorage.removeItem("messages");
+            alert("Chat messages cleared.");
+        }
+    }
+
+    // Function to upload a story
+    function uploadStory() {
+        const title = document.getElementById("storyTitle").value.trim();
+        const description = document.getElementById("storyDescription").value.trim();
+        const mediaFile = document.getElementById("storyMedia").files[0];
+
+        if (title && description && mediaFile) {
+            const stories = JSON.parse(localStorage.getItem("stories")) || [];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                stories.push({
+                    title: title,
+                    description: description,
+                    media: e.target.result,
+                    mediaType: mediaFile.type
+                });
+                localStorage.setItem("stories", JSON.stringify(stories));
+                alert("Story uploaded successfully!");
+                document.getElementById("uploadStoryForm").reset();
+            };
+
+            reader.readAsDataURL(mediaFile); // Convert file to base64 for storage in localStorage
+        } else {
+            alert("Please fill out all fields and select a file.");
+        }
+        return false;
+    }
+
+    // Function to display contact messages
+    function displayMessages() {
+        const messagesContainer = document.getElementById("messagesContainer");
+        messagesContainer.innerHTML = ""; // Clear previous content
+
+        const messages = JSON.parse(localStorage.getItem("contactMessages")) || [];
+        if (messages.length === 0) {
+            messagesContainer.innerHTML = "<p>No messages received.</p>";
+        } else {
+            messages.forEach((msg, index) => {
+                const messageDiv = document.createElement("div");
+                messageDiv.classList.add("message");
+                messageDiv.innerHTML = `
+                    <strong>${msg.name} (${msg.email}):</strong>
+                    ${msg.subject} - ${msg.message}
+                    <button onclick="deleteMessage(${index})">Delete</button>
+                `;
+                messagesContainer.appendChild(messageDiv);
+            });
+        }
+    }
+
+    // Function to delete a specific contact message
+    function deleteMessage(index) {
+        const messages = JSON.parse(localStorage.getItem("contactMessages")) || [];
+        messages.splice(index, 1); // Remove the message from the array
+        localStorage.setItem("contactMessages", JSON.stringify(messages));
+        displayMessages(); // Refresh the display
+    }
+
+    // Function to clear all contact messages
+    function clearContactMessages() {
+        if (confirm("Are you sure you want to clear all contact messages?")) {
+            localStorage.removeItem("contactMessages");
+            displayMessages(); // Refresh the display
+            alert("All contact messages cleared.");
+        }
+    }
+       // Clear stories from localStorage
+       document.getElementById("clearStoriesBtn").onclick = function() {
+        if (confirm("Are you sure you want to clear all stories? This action cannot be undone.")) {
+            localStorage.removeItem("stories");
+            alert("All stories have been cleared.");
+        }
+    };
+
+    // Display messages on page load
+    displayMessages();
+
+    // Load and display volunteer applications
+function loadApplications() {
+    const applicationsContainer = document.getElementById("applicationsContainer");
+    const applications = JSON.parse(localStorage.getItem("volunteerApplications")) || [];
+
+    applicationsContainer.innerHTML = ""; // Clear previous content
+
+    if (applications.length === 0) {
+        applicationsContainer.innerHTML = "<p>No volunteer applications received.</p>";
+        return;
+    }
+
+    applications.forEach((app, index) => {
+        const appDiv = document.createElement("div");
+        appDiv.classList.add("application");
+        appDiv.innerHTML = `
+            <h3>Application #${index + 1}</h3>
+            <p><strong>Name:</strong> ${app.name}</p>
+            <p><strong>Email:</strong> ${app.email}</p>
+            <p><strong>Phone:</strong> ${app.phone}</p>
+            <p><strong>Preferred Role:</strong> ${app.role}</p>
+            <p><strong>Message:</strong> ${app.message}</p>
+            <p><strong>Submitted on:</strong> ${app.date}</p>
+        `;
+        applicationsContainer.appendChild(appDiv);
+    });
+}
+
+// Clear all volunteer applications
+function clearApplications() {
+    if (confirm("Are you sure you want to clear all volunteer applications?")) {
+        localStorage.removeItem("volunteerApplications");
+        loadApplications(); // Reload to show empty state
+    }
+}
+
+// Load applications on page load
+window.onload = loadApplications;
+
+</script>
+
+</body>
+</html>

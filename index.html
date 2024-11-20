@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Donation Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+<!-- Icon Navigation Bar -->
+<nav class="icon-bar">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="donate.html"><i class="fas fa-hand-holding-heart"></i> Donate</a>
+    <a href="stories.html"><i class="fas fa-book-open"></i> Stories</a>
+    <a href="community.html"><i class="fas fa-comments"></i> Community</a>
+    <a href="volunteer.html"><i class="fas fa-hands-helping"></i> Volunteer</a>
+    <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="https://chat.whatsapp.com/HguQWz2vYyhDdjcC6NEToy" target="_blank" class="whatsapp-link">
+        <i class="fab fa-whatsapp"></i>WhatsApp</a>
+    <a href="admin_dashboard.html"><i class="fas fa-user-shield"></i> Admin</a>
+</nav>
+
+<!-- Hero Section with Slideshow -->
+<section class="hero">
+    <div class="hero-slide">
+        <div class="hero-content" id="slide1">
+            <h1>Lets help our brothers from Sudan Africa and also Kenya</h1>
+            <h1>Welcome to Our Donation Platform</h1>
+            <p>Help us make a difference in the lives of those in need.</p>
+            <button onclick="location.href='donate.html'">Donate Now</button>
+        </div>
+        <div class="hero-content" id="slide2">
+            <h1>Lets help our brothers from Sudan Africa and also Kenya</h1>
+            <h1>Your Support Matters</h1>
+            <p>Every little bit goes a long way to support our community.</p>
+            <button onclick="location.href='community.html'">Join the Community</button>
+        </div>
+        <div class="hero-content" id="slide3">
+
+            <h1>Read Inspiring Stories</h1>
+            <p>Discover the impact your contribution has made in people’s lives.</p>
+            <button onclick="location.href='stories.html'">Read Stories</button>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Stories Section -->
+<section class="recent-stories">
+    <h2>Recent Stories of Hope</h2>
+    <div id="storiesContainer" class="stories-container">
+        <!-- Dynamic content will load here -->
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2024 Donation Platform | <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
+</footer>
+
+<!-- JavaScript for Slideshow and Dynamic Content -->
+<script>
+// Slideshow Logic
+let currentSlide = 0;
+const slides = document.querySelectorAll('.hero-content');
+
+function showSlide(index) {
+    slides.forEach((slide, i) => {
+        slide.style.display = i === index ? 'block' : 'none';
+    });
+}
+
+function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    showSlide(currentSlide);
+}
+
+setInterval(nextSlide, 5000); // Change slide every 5 seconds
+showSlide(currentSlide); // Show the initial slide
+
+// Recent Stories
+const stories = [
+    { title: "A Helping Hand", content: "Through your donations, Mary was able to secure a stable job and support her family.", image: "images/story11.jpg" },
+    { title: "Education for All", content: "Thanks to generous contributions, we were able to build a school in a rural area.", image: "images/story21.jpg" },
+    { title: "Healthcare for the Elderly", content: "We provided healthcare facilities to elders in need in remote locations.", image: "images/story31.jpg" }
+];
+
+function loadStories() {
+    const container = document.getElementById('storiesContainer');
+    stories.forEach(story => {
+        const storyElement = document.createElement('div');
+        storyElement.className = 'story';
+        storyElement.innerHTML = `
+            <img src="${story.image}" alt="${story.title}">
+            <h3>${story.title}</h3>
+            <p>${story.content}</p>
+            <button onclick="location.href='stories.html'">Read More</button>
+        `;
+        container.appendChild(storyElement);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', loadStories);
+</script>
+
+</body>
+</html>

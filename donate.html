@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donate</title>
+  <link rel="stylesheet" href="donate.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Icon Navigation Bar -->
+    <nav class="icon-bar">
+      <a href="index.html"><i class="fas fa-home"></i> Home</a>
+      <a href="donate.html"><i class="fas fa-hand-holding-heart"></i> Donate</a>
+      <a href="stories.html"><i class="fas fa-book-open"></i> Stories</a>
+      <a href="community.html"><i class="fas fa-comments"></i> Community</a>
+      <a href="volunteer.html"><i class="fas fa-hands-helping"></i> Volunteer</a>
+      <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+      <a href="https://chat.whatsapp.com/HguQWz2vYyhDdjcC6NEToy" target="_blank" class="whatsapp-link">
+          <i class="fab fa-whatsapp"></i>WhatsApp</a>
+      
+      <a href="admin_dashboard.html"><i class="fas fa-user-shield"></i> Admin</a>
+  </nav>
+  <div class="container">
+    <div class="content">
+      <h1>Support Our Cause</h1>
+      <p>Your donation will help us achieve our goals. Thank you for your generosity!</p>
+      
+      <!-- PayPal Donate Button -->
+      <form action="https://www.paypal.com/donate" method="post" target="_top">
+        <input type="hidden" name="business" value="helpdonation08@gmail.com">
+        <input type="hidden" name="cmd" value="_donations">
+        <input type="hidden" name="item_name" value="Donation">
+        <button type="submit" class="donate">Donate with PayPal</button>
+      </form>
+      
+      <!-- Optional form for entering a custom donation amount -->
+      <form action="https://www.paypal.com/donate" method="post" target="_top">
+        <input type="hidden" name="business" value="helpdonation08@gmail.com">
+        <input type="hidden" name="cmd" value="_donations">
+        <input type="hidden" name="item_name" value="Custom Donation">
+        
+        <label for="donation-amount">Enter your donation amount:</label>
+        <input type="number" id="donation-amount" name="amount" placeholder="Amount in USD" required>
+
+        <button type="submit" class="donate">Donate Now</button>
+      </form>
+      
+      <!-- Footer -->
+      <footer>
+        <p>Need help? <a href="contact.html">Contact Us</a></p>
+      </footer>
+    </div>
+  </div>
+
+</body>
+</html>
